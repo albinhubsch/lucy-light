@@ -6,6 +6,7 @@ import serial
 import json
 
 from Moves import Moves
+from Comm import Comm
 
 '''
 	Main program
@@ -19,7 +20,10 @@ def main():
 	# Initiate the moves object
 	m = Moves(keydata)
 
-	print m.getSummary('2014-W10')
+	# print m.getSummary('2014-W10')
+	
+	c = Comm()
+	c.send('1')
 
 if __name__ == "__main__":
 	main()
