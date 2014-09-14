@@ -44,5 +44,5 @@ class Moves():
 			to - yyyyMMdd
 	'''
 	def getRangeSummary(self, fromdate, todate):
-		root = '/user/summary/daily/'
-		return requests.get(self.api_url + root + '?from='+ fromdate + '?to=' + todate + self.token).json()
+		root = '/user/summary/daily'
+		return requests.get(self.api_url + root + self.token + '&from='+ fromdate + '&to=' + todate).json()
