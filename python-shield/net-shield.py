@@ -38,8 +38,10 @@ def main():
 		print currentDate
 		print oldDate
 
+		# c.send('hej')
+
 		# Sleep 30s
-		time.sleep(30)
+		time.sleep(5)
 
 if __name__ == "__main__":
 	main()
