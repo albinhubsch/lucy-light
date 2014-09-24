@@ -20,5 +20,6 @@ class Comm():
 		Send
 	'''
 	def send(self, data):
+		print 'Sending message: ' + data
 		ser = serial.Serial(self.con, self.speed)
 		ser.write(data)

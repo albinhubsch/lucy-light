@@ -9,6 +9,7 @@ import datetime
 
 from Moves import Moves
 from Comm import Comm
+from DataProcessor import DataProcessor
 
 '''
 	Main program
@@ -21,27 +22,38 @@ def main():
 
 	# Initiate the moves object
 	m = Moves(keydata)
-
-	# print m.getRangeSummary('20140801', '20140810')
 	
 	# Initiate the com link with arduino
-	c = Comm()
+	# c = Comm()
 
-	# c.send('1')
+	# c.send('bootup')
 
+	# time.sleep(5);
+
+	# Run program loop
 	while True:
-		print('hejs')
 
+		# Load date interval
 		currentDate = datetime.datetime.now().strftime('%Y%m%d')
-		oldDate = (datetime.datetime.now() - datetime.timedelta(days=31)).strftime('%Y%m%d')
+		oldDate = (datetime.datetime.now() - datetime.timedelta(days=30)).strftime('%Y%m%d')
 
 		print currentDate
 		print oldDate
 
+		data = m.getRangeSummary(oldDate, currentDate)
+		processor = DataProcessor(data)
+
+		processor.generateDayColor()
+
+		if processor.checkMoving():
+			c.send('moving')
+		else:
+			pass
+
 		# c.send('hej')
 
-		# Sleep 30s
-		time.sleep(5)
+		# Sleep program untill next check
+		time.sleep(30)
 
 if __name__ == "__main__":
 	main()

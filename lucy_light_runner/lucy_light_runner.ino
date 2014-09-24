@@ -40,29 +40,36 @@ void loop()
     if (Comp("m1 off")==0) {
         Serial.write("Motor 1 -> Offline\n");
     }
+    
+    clearLEDs();
+    leds.setPixelColor(0, RED);
+    leds.setPixelColor(1, RED);
+    leds.show();
+    
+    delay(200);
 
-    // Ride the Rainbow Road
-    for (int i=0; i<LED_COUNT*10; i++)
-    {
-      rainbow(i);
-      delay(100);  // Delay between rainbow slides
-    }
-    
-    // Indigo cylon
-    // Do a cylon (larson scanner) cycle 10 times
-    for (int i=0; i<10; i++)
-    {
-      // cylon function: first param is color, second is time (in ms) between cycles
-      cylon(INDIGO, 500);  // Indigo cylon eye!
-    }
-    
-    // A light shower of spring green rain
-    // This will run the cascade from top->bottom 20 times
-    for (int i=0; i<20; i++)
-    {
-      // First parameter is the color, second is direction, third is ms between falls
-      cascade(MEDIUMSPRINGGREEN, TOP_DOWN, 100); 
-    }
+//    // Ride the Rainbow Road
+//    for (int i=0; i<LED_COUNT*10; i++)
+//    {
+//      rainbow(i);
+//      delay(100);  // Delay between rainbow slides
+//    }
+//    
+//    // Indigo cylon
+//    // Do a cylon (larson scanner) cycle 10 times
+//    for (int i=0; i<10; i++)
+//    {
+//      // cylon function: first param is color, second is time (in ms) between cycles
+//      cylon(INDIGO, 500);  // Indigo cylon eye!
+//    }
+//    
+//    // A light shower of spring green rain
+//    // This will run the cascade from top->bottom 20 times
+//    for (int i=0; i<20; i++)
+//    {
+//      // First parameter is the color, second is direction, third is ms between falls
+//      cascade(MEDIUMSPRINGGREEN, TOP_DOWN, 100); 
+//    }
 }
 
 // 
