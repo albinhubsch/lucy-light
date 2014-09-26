@@ -32,7 +32,19 @@ class DataProcessor():
 		Generate day color
 	'''
 	def generateDayColor(self):
-		print self.data[-1]
+		summary = self.data[-3]['summary']
+
+		# Prep
+		tot = 0
+		segments = []
+
+		# 
+		for d in summary:
+			tot = tot + float(d['duration'])
+			segments.append({'activity':d['activity'], 'duration': float(d['duration'])})
+
+		print tot
+		print segments
 
 	'''
 		Generate week color
@@ -44,6 +56,15 @@ class DataProcessor():
 		Generate month color
 	'''
 	def generateMonthColor(self):
+		pass
+
+	'''
+		Generate color
+	'''
+	def generateColor(self, total, segments):
+		# cycling #00cdec
+		# walking #00d55a
+		# running #f660f4
 		pass
 
 	'''
