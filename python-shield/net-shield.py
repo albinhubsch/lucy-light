@@ -24,11 +24,11 @@ def main():
 	m = Moves(keydata)
 	
 	# Initiate the com link with arduino
-	# c = Comm()
+	c = Comm()
 
-	# c.send('bootup')
+	c.send('bootup')
 
-	# time.sleep(5);
+	time.sleep(5);
 
 	# Run program loop
 	while True:
@@ -43,14 +43,23 @@ def main():
 		data = m.getRangeSummary(oldDate, currentDate)
 		processor = DataProcessor(data)
 
-		print processor.generateDayColor()
+		leds = processor.generateDayColor()
+		state = 's'
 
 		if processor.checkMoving():
-			c.send('moving')
-		else:
-			pass
+			state = 'm'
 
-		# c.send('hej')
+		msg = ''
+
+		for l in leds:
+			msg = msg + l['activity'] + ':' + str(l['amount']) + ','
+
+		msg = msg + 'state:' + state
+
+		print leds
+		print msg
+
+		c.send(msg)
 
 		# Sleep program untill next check
 		time.sleep(30)
