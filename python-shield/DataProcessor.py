@@ -3,6 +3,9 @@
 
 import datetime
 
+SHORTNAMES = {'walking': 'w', 'cycling': 'c', 'running': 'r'}
+NUMBER_OF_LEDS = 60
+
 '''
 	DataProcessor Class
 '''
@@ -40,11 +43,11 @@ class DataProcessor():
 
 		# 
 		for d in summary:
-			tot = tot + float(d['duration'])
-			segments.append({'activity':d['activity'], 'duration': float(d['duration'])})
+			if d['activity'] is not 'transport':
+				tot = tot + float(d['duration'])
+				segments.append({'activity':SHORTNAMES[d['activity']], 'duration': float(d['duration'])})
 
-		print tot
-		print segments
+		return self.generateLEDS(tot, segments)
 
 	'''
 		Generate week color
@@ -61,11 +64,15 @@ class DataProcessor():
 	'''
 		Generate color
 	'''
-	def generateColor(self, total, segments):
-		# cycling #00cdec
-		# walking #00d55a
-		# running #f660f4
-		pass
+	def generateLEDS(self, total, segments):
+		leds = []
+		for s in segments:
+			leds.append({'activity': s['activity'], 'amount': (s['duration']/total) * NUMBER_OF_LEDS})
+
+		if leds:
+			return leds
+		else:
+			return [{'activity': '-', 'amount': NUMBER_OF_LEDS}]
 
 	'''
 		Get message to send to Arduino

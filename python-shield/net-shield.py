@@ -43,7 +43,7 @@ def main():
 		data = m.getRangeSummary(oldDate, currentDate)
 		processor = DataProcessor(data)
 
-		processor.generateDayColor()
+		print processor.generateDayColor()
 
 		if processor.checkMoving():
 			c.send('moving')

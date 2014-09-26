@@ -42,8 +42,8 @@ void loop()
     }
     
     clearLEDs();
-    leds.setPixelColor(0, RED);
-    leds.setPixelColor(1, RED);
+    leds.setPixelColor(0, RUNNING);
+    leds.setPixelColor(1, RUNNING);
     leds.show();
     
     delay(200);

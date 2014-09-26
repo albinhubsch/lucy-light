@@ -12,6 +12,21 @@
     to see the colors in action, check out:
    http://www.w3schools.com/html/html_colorvalues.asp */
    
+/*
+  Colors specific for MOVES
+*/
+#define CYCLING                 0x00CDEC
+#define WALKING                 0x00F95A
+#define RUNNING                 0xF660F4
+
+/*
+  System lamp colors
+*/
+#define WARNING                 0x990000
+
+/*
+  Colors from Neopixel
+*/
 #define BLACK			0x000000
 #define NAVY			0x000080
 #define DARKBLUE		0x00008B
