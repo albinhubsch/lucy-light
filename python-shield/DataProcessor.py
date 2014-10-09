@@ -16,6 +16,7 @@ class DataProcessor():
 	'''
 	def __init__(self, data):
 		self.data = data
+		print self.data
 
 	'''
 		Check if currently moving
@@ -79,3 +80,36 @@ class DataProcessor():
 	'''
 	def getMessageToSend(self):
 		pass
+
+
+	'''
+		New data processor
+	'''
+	def newDataProcessor(self):
+
+		# Prep
+		tot = 0
+		avg = {'walking': {'count': 0, 'calc': 0.0}, 'running': {'count': 0, 'calc': 0.0}, 'transport': {'count': 0, 'calc': 0.0}}
+
+		for row in self.data:
+			for summary in row['summary']:
+				avg[str(summary['activity'])]['count'] += 1
+				avg[str(summary['activity'])]['calc'] += summary['duration']
+
+		for i in avg:
+			try:
+				avg[i]['calc'] = avg[i]['calc']/avg[i]['count']
+			except Exception, e:
+				avg[i]['calc'] = 0.0
+
+		biggest = {'duration': 0.0}
+		for i in self.data[-2]['summary']:
+			if i['duration'] > biggest['duration']:
+				biggest = i
+
+		msg = [{'activity': SHORTNAMES[biggest['activity']], 'ratio': biggest['duration']/avg[biggest['activity']]['calc']}]
+
+		# f = 49
+		# x = "%.2f" % f
+
+		print msg
