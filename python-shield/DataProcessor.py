@@ -107,9 +107,12 @@ class DataProcessor():
 			if i['duration'] > biggest['duration']:
 				biggest = i
 
-		msg = [{'activity': SHORTNAMES[biggest['activity']], 'ratio': biggest['duration']/avg[biggest['activity']]['calc']}]
+		print('val: ' + str(biggest['duration']))
+		print('avg: ' + str(avg[biggest['activity']]['calc']))
+
+		msg = [{'activity': SHORTNAMES[biggest['activity']], 'ratio': '%.2f'%(biggest['duration']/avg[biggest['activity']]['calc']) }]
 
 		# f = 49
 		# x = "%.2f" % f
 
-		print msg
+		return msg

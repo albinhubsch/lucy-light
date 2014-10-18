@@ -37,29 +37,31 @@ def main():
 		currentDate = datetime.datetime.now().strftime('%Y%m%d')
 		oldDate = (datetime.datetime.now() - datetime.timedelta(days=30)).strftime('%Y%m%d')
 
-		print currentDate
-		print oldDate
-
 		data = m.getRangeSummary(oldDate, currentDate)
 		processor = DataProcessor(data)
 
-		processor.newDataProcessor()
+		msg = processor.newDataProcessor()
 
-		leds = processor.generateDayColor()
+		# leds = processor.generateDayColor()
 		state = 's'
+
+		# inp = raw_input('input something')
+		# print('Typed' + inp)
 
 		if processor.checkMoving():
 			state = 'm'
 
-		msg = ''
+		# msg = ''
 
-		for l in leds:
-			msg = msg + l['activity'] + ':' + str(l['amount']) + ','
+		# for l in leds:
+		# 	msg = msg + l['activity'] + ':' + str(l['amount']) + ','
 
-		msg = msg + 'state:' + state
+		# msg = msg + 'state:' + state
 
-		print leds
-		print msg
+		# print leds
+		msg[0]['state'] = state
+
+		print(msg)
 
 		# c.send(msg)
 
