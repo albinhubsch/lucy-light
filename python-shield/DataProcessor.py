@@ -3,7 +3,7 @@
 
 import datetime
 
-SHORTNAMES = {'walking': 'w', 'cycling': 'c', 'running': 'r'}
+SHORTNAMES = {'walking': 0, 'cycling': 1, 'running': 2}
 NUMBER_OF_LEDS = 60
 
 '''
@@ -110,7 +110,7 @@ class DataProcessor():
 		print('val: ' + str(biggest['duration']))
 		print('avg: ' + str(avg[biggest['activity']]['calc']))
 
-		msg = [{'activity': SHORTNAMES[biggest['activity']], 'ratio': '%.2f'%(biggest['duration']/avg[biggest['activity']]['calc']) }]
+		msg = str(SHORTNAMES[biggest['activity']]) + ',' + str(int((biggest['duration']/avg[biggest['activity']]['calc'])*100))
 
 		# f = 49
 		# x = "%.2f" % f

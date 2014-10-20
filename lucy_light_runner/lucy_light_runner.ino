@@ -3,38 +3,23 @@
 // 
 #include <Adafruit_NeoPixel.h>
 #include "WS2812_Definitions.h"
-#include <JsonParser.h>
-
-// using namespace ArduinoJson::Parser;
 
 #define PIN 4
-#define LED_COUNT 2
+#define LED_COUNT 60
 
 // 
 // 
 // 
-char inData[100]; // Allocate some space for the string
-char inChar=-1; // Where to store the character read
-byte index = 0; // Index into array; where to store the character
+int inData[4]; // Allocate some space for the string
 
 Adafruit_NeoPixel leds = Adafruit_NeoPixel(LED_COUNT, PIN, NEO_GRB + NEO_KHZ800);
-
-using namespace ArduinoJson::Parser;
 
 // 
 // SETUP
 // 
 void setup() {
-    Serial.begin(9600);
-    Serial.write("Power On");
-
-    JsonParser<32> parser;
-    char json[] = "{\"sensor\":\"MYSENSOR\",\"time\":1351824120,\"data\":[48.756080,2.302038]}";
-
-    JsonObject root = parser.parse(json);
-    char* sensor = root["sensor"];
-    Serial.write(sensor);
-
+    // Serial.begin(9600);
+    // Serial.println("Power On");
 
     leds.begin();  // Call this to start up the LED strip.
     startUpSequence();
@@ -49,19 +34,25 @@ void loop()
   
     // serialToString();
 
-    // Serial.write(inData);
-    
-    // clearLEDs();
-    // leds.setBrightness(0);
-    // leds.setPixelColor(0, RUNNING);
-    // leds.setPixelColor(1, WALKING);
-    // leds.show();
+    // if(inData[0] != 0)
+    // {
+    //     Serial.println(inData[0]);
+    // }
 
-    // stateMoving(WALKING, 10, 255);
-    stateStanding(WALKING, 10);
-    led_error();
+    // if(state == 1)
+    // {
+    //     Serial.write("Moving");
+    // }else if(state == 0){
+    //     Serial.write("Standing");
+    // }else{
+    //     Serial.write("none");
+    // }
+
+    stateMoving(WALKING, 5, 30);
+    // stateStanding(WALKING, 30);
+    // led_error();
     
-    delay(1);
+    delay(10);
     
 }
 
@@ -71,24 +62,18 @@ void loop()
 // 
 char serialToString()
 {
-  
-    memset(&inData[0], 0, sizeof(inData));
-
     // Don't read unless you know there is data
     while (Serial.available() > 0)
     {
-        
-        // One less than the size of the array
-        if(index < 99)
-        {
-            inChar = Serial.read(); // Read a character
-            inData[index] = inChar; // Store it
-            index++; // Increment where to write next
-            inData[index] = '\0'; // Null terminate the string
-        }
+        Serial.println("Hittat");
+        inData[0] = Serial.parseInt();
+        inData[1] = Serial.parseInt();
+        inData[2] = Serial.parseInt();
+
+        Serial.println(inData[0]);
+        Serial.println(inData[1]);
+        Serial.println(inData[2]);
     }
-    
-    index = 0;
 }
 
 // 
@@ -110,9 +95,9 @@ void stateStanding(uint32_t color, int lum)
 void stateMoving(uint32_t color, int low, int high)
 {
 
-    int speed = 15;
+    int speed = 20;
 
-    for (int i = 0; i < 5; ++i)
+    for (int i = 0; i < 1; ++i)
     {
         
         clearLEDs();
@@ -151,7 +136,7 @@ void startUpSequence()
 
         clearLEDs();
         setStripColor(WHITE);
-        leds.setBrightness(255);
+        leds.setBrightness(150);
         leds.show();
         delay(150);
         leds.setBrightness(1);

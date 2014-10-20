@@ -24,7 +24,7 @@ def main():
 	m = Moves(keydata)
 	
 	# Initiate the com link with arduino
-	# c = Comm()
+	c = Comm()
 
 	# c.send('bootup')
 
@@ -43,13 +43,13 @@ def main():
 		msg = processor.newDataProcessor()
 
 		# leds = processor.generateDayColor()
-		state = 's'
+		state = 0
 
 		# inp = raw_input('input something')
 		# print('Typed' + inp)
 
 		if processor.checkMoving():
-			state = 'm'
+			state = 1
 
 		# msg = ''
 
@@ -59,11 +59,11 @@ def main():
 		# msg = msg + 'state:' + state
 
 		# print leds
-		msg[0]['state'] = state
+		msg = str(1) + ',' + msg
 
 		print(msg)
 
-		# c.send(msg)
+		c.send(msg)
 
 		# Sleep program untill next check
 		time.sleep(30)

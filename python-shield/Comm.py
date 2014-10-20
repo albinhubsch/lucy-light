@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import serial
+import json
 
 '''
 	Class Comm
@@ -20,6 +21,6 @@ class Comm():
 		Send
 	'''
 	def send(self, data):
-		print 'Sending message: ' + data
+		print 'Sending message: ',data
 		ser = serial.Serial(self.con, self.speed)
-		ser.write(data)
+		ser.write(data+'\n')
