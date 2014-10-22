@@ -11,6 +11,7 @@
 // 
 // 
 int inData[4]; // Allocate some space for the string
+int MAXBRIGHTNESS = 150;
 
 Adafruit_NeoPixel leds = Adafruit_NeoPixel(LED_COUNT, PIN, NEO_GRB + NEO_KHZ800);
 
@@ -18,8 +19,11 @@ Adafruit_NeoPixel leds = Adafruit_NeoPixel(LED_COUNT, PIN, NEO_GRB + NEO_KHZ800)
 // SETUP
 // 
 void setup() {
-    // Serial.begin(9600);
-    // Serial.println("Power On");
+
+    inData[0] = -1;
+
+    Serial.begin(9600);
+    Serial.println("Power On");
 
     leds.begin();  // Call this to start up the LED strip.
     startUpSequence();
@@ -29,26 +33,62 @@ void setup() {
 // LOOP
 // Program loop listening for comands and controlls the light
 // 
+// State,activity,strenght
+// 'walking': 0, 'cycling': 1, 'running': 2
+// 
 void loop()
 {
   
-    // serialToString();
+    serialToString();
 
-    // if(inData[0] != 0)
-    // {
-    //     Serial.println(inData[0]);
-    // }
+    int state = inData[0];
+    int activity = inData[1];
+    int strenght = inData[2];
 
-    // if(state == 1)
-    // {
-    //     Serial.write("Moving");
-    // }else if(state == 0){
-    //     Serial.write("Standing");
-    // }else{
-    //     Serial.write("none");
-    // }
+    switch(state)
+    {
+        case -1:
+            led_error();
+        break;
+        case 0:
+            switch(activity)
+            {
+                case 0:
+                    stateStanding(WALKING, map(strenght, 0, 140, 0, MAXBRIGHTNESS));
+                break;
+                case 1:
+                    stateStanding(CYCLING, map(strenght, 0, 140, 0, MAXBRIGHTNESS)); 
+                break;
+                case 2:
+                    stateStanding(RUNNING, map(strenght, 0, 140, 0, MAXBRIGHTNESS));
+                break;
+                default:
+                    stateStanding(WARNING, map(strenght, 0, 140, 0, MAXBRIGHTNESS));
+            }
+        break;
+        case 1:
+            switch(activity)
+            {
+                case 0:
+                    stateMoving(WALKING, 4, map(strenght, 0, 140, 0, MAXBRIGHTNESS));
+                break;
+                case 1:
+                    stateMoving(CYCLING, 4, map(strenght, 0, 140, 0, MAXBRIGHTNESS)); 
+                break;
+                case 2:
+                    stateMoving(RUNNING, 4, map(strenght, 0, 140, 0, MAXBRIGHTNESS));
+                break;
+                default:
+                    stateMoving(WARNING, 4, map(strenght, 0, 140, 0, MAXBRIGHTNESS));
+            }
+        break;
+        default:
+            led_error();
+    }
 
-    stateMoving(WALKING, 5, 30);
+    // led_error();
+
+    // stateMoving(WALKING, 5, 30);
     // stateStanding(WALKING, 30);
     // led_error();
     
@@ -69,6 +109,10 @@ char serialToString()
         inData[0] = Serial.parseInt();
         inData[1] = Serial.parseInt();
         inData[2] = Serial.parseInt();
+
+        if (Serial.read() == '\n') {
+
+        }
 
         Serial.println(inData[0]);
         Serial.println(inData[1]);
@@ -136,7 +180,7 @@ void startUpSequence()
 
         clearLEDs();
         setStripColor(WHITE);
-        leds.setBrightness(150);
+        leds.setBrightness(MAXBRIGHTNESS);
         leds.show();
         delay(150);
         leds.setBrightness(1);
@@ -158,14 +202,14 @@ void led_error()
         clearLEDs();
         setStripColor(WARNING);
 
-        for (int i = 15; i < 255; ++i)
+        for (int i = 15; i < MAXBRIGHTNESS; ++i)
         {
             leds.setBrightness(i);
             leds.show();
             delay(1);
         }
 
-        for (int i = 255; i > 15; --i)
+        for (int i = MAXBRIGHTNESS; i > 15; --i)
         {
             leds.setBrightness(i);
             leds.show();

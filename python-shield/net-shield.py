@@ -51,22 +51,15 @@ def main():
 		if processor.checkMoving():
 			state = 1
 
-		# msg = ''
-
-		# for l in leds:
-		# 	msg = msg + l['activity'] + ':' + str(l['amount']) + ','
-
-		# msg = msg + 'state:' + state
-
 		# print leds
-		msg = str(1) + ',' + msg
+		msg = str(state) + ',' + msg
 
 		print(msg)
 
 		c.send(msg)
 
 		# Sleep program untill next check
-		time.sleep(30)
+		time.sleep(60)
 
 if __name__ == "__main__":
 	main()
