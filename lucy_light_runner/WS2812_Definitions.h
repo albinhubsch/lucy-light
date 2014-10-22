@@ -15,10 +15,14 @@
 /*
   Colors specific for MOVES
 */
-#define CYCLING                 0x00CDEC
-#define WALKING                 0x00F95A
-#define RUNNING                 0xF660F4
+#define CYCLING                 0x00bad6
+#define WALKING                 0x00e41b
+#define RUNNING                 0xf441f2
 
+
+// #define CYCLING                 0x00CDEC
+// #define WALKING                 0x00F95A
+// #define RUNNING                 0xF660F4
 /*
   System lamp colors
 */

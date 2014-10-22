@@ -6,6 +6,7 @@ import serial
 import json
 import time
 import datetime
+import requests
 
 from Moves import Moves
 from Comm import Comm
@@ -26,40 +27,48 @@ def main():
 	# Initiate the com link with arduino
 	c = Comm()
 
-	# c.send('bootup')
-
-	# time.sleep(5);
+	loops = 0
 
 	# Run program loop
 	while True:
 
-		# Load date interval
-		currentDate = datetime.datetime.now().strftime('%Y%m%d')
-		oldDate = (datetime.datetime.now() - datetime.timedelta(days=30)).strftime('%Y%m%d')
-
-		data = m.getRangeSummary(oldDate, currentDate)
-		processor = DataProcessor(data)
-
-		msg = processor.newDataProcessor()
-
-		# leds = processor.generateDayColor()
 		state = 0
 
-		# inp = raw_input('input something')
-		# print('Typed' + inp)
+		if loops is 0:
+			# Load date interval
+			currentDate = datetime.datetime.now().strftime('%Y%m%d')
+			oldDate = (datetime.datetime.now() - datetime.timedelta(days=30)).strftime('%Y%m%d')
 
-		if processor.checkMoving():
+			data = m.getRangeSummary(oldDate, currentDate)
+			processor = DataProcessor(data)
+
+			raw = processor.newDataProcessor()
+
+			if processor.checkMoving():
+				state = 1
+
+
+		# Check realtime
+		realtime = datetime.datetime.strptime(requests.get('http://studier.albinhubsch.se/lucy-light').text, "%Y-%m-%d %H:%M:%S")
+		now = datetime.datetime.now()
+
+		if realtime + datetime.timedelta(minutes=10) > now:
 			state = 1
 
-		# print leds
-		msg = str(state) + ',' + msg
 
-		print(msg)
+		msg = str(state) + ',' + raw
 
 		c.send(msg)
 
+		if loops < 10:
+			loops += 1
+		else:
+			loops = 0
+
 		# Sleep program untill next check
-		time.sleep(60)
+		time.sleep(6)
+
+
 
 if __name__ == "__main__":
 	main()

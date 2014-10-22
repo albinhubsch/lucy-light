@@ -16,11 +16,14 @@ class Comm():
 	def __init__(self):
 		self.speed = 9600
 		self.con = '/dev/tty.usbmodem1411'
+		self.ser = serial.Serial(self.con, self.speed)
 
 	'''
 		Send
 	'''
 	def send(self, data):
 		print 'Sending message: ',data
-		ser = serial.Serial(self.con, self.speed)
-		ser.write(data+'\n')
+		self.ser.write(data+'\n')
+
+	def read(self):
+		self.ser.readline()

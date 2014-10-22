@@ -23,7 +23,6 @@ void setup() {
     inData[0] = -1;
 
     Serial.begin(9600);
-    Serial.println("Power On");
 
     leds.begin();  // Call this to start up the LED strip.
     startUpSequence();
@@ -105,7 +104,6 @@ char serialToString()
     // Don't read unless you know there is data
     while (Serial.available() > 0)
     {
-        Serial.println("Hittat");
         inData[0] = Serial.parseInt();
         inData[1] = Serial.parseInt();
         inData[2] = Serial.parseInt();
@@ -113,10 +111,6 @@ char serialToString()
         if (Serial.read() == '\n') {
 
         }
-
-        Serial.println(inData[0]);
-        Serial.println(inData[1]);
-        Serial.println(inData[2]);
     }
 }
 
