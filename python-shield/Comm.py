@@ -26,4 +26,4 @@ class Comm():
 		self.ser.write(data+'\n')
 
 	def read(self):
-		self.ser.readline()
+		return self.ser.readline()

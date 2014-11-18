@@ -11,7 +11,9 @@
 // 
 // 
 int inData[4]; // Allocate some space for the string
-int MAXBRIGHTNESS = 150;
+int MAXBRIGHTNESS = 160;
+int controller = 8;
+boolean power = false;
 
 Adafruit_NeoPixel leds = Adafruit_NeoPixel(LED_COUNT, PIN, NEO_GRB + NEO_KHZ800);
 
@@ -20,7 +22,13 @@ Adafruit_NeoPixel leds = Adafruit_NeoPixel(LED_COUNT, PIN, NEO_GRB + NEO_KHZ800)
 // 
 void setup() {
 
-    inData[0] = -1;
+    // 
+    pinMode(controller, INPUT);
+
+    inData[0] = 0;
+    inData[1] = 0;
+    inData[2] = 0;
+    inData[3] = 0;
 
     Serial.begin(9600);
 
@@ -33,64 +41,80 @@ void setup() {
 // Program loop listening for comands and controlls the light
 // 
 // State,activity,strenght
-// 'walking': 0, 'cycling': 1, 'running': 2
+// type, duration, freq, indetifier
 // 
 void loop()
 {
+
+    int looper = 0;
+
+    int activity = 0;
+    int duration = 0;
+    int freq = 0;
+    int identifier = 0;
+    int strenght = 255;
+    int controller_val = 0;
   
     serialToString();
 
-    int state = inData[0];
-    int activity = inData[1];
-    int strenght = inData[2];
-
-    switch(state)
+    if(duration == 0 && identifier != inData[3])
     {
-        case -1:
-            led_error();
-        break;
-        case 0:
-            switch(activity)
-            {
-                case 0:
-                    stateStanding(WALKING, map(strenght, 0, 140, 0, MAXBRIGHTNESS));
-                break;
-                case 1:
-                    stateStanding(CYCLING, map(strenght, 0, 140, 0, MAXBRIGHTNESS)); 
-                break;
-                case 2:
-                    stateStanding(RUNNING, map(strenght, 0, 140, 0, MAXBRIGHTNESS));
-                break;
-                default:
-                    stateStanding(WARNING, map(strenght, 0, 140, 0, MAXBRIGHTNESS));
-            }
-        break;
-        case 1:
-            switch(activity)
-            {
-                case 0:
-                    stateMoving(WALKING, 4, map(strenght, 0, 140, 0, MAXBRIGHTNESS));
-                break;
-                case 1:
-                    stateMoving(CYCLING, 4, map(strenght, 0, 140, 0, MAXBRIGHTNESS)); 
-                break;
-                case 2:
-                    stateMoving(RUNNING, 4, map(strenght, 0, 140, 0, MAXBRIGHTNESS));
-                break;
-                default:
-                    stateMoving(WARNING, 4, map(strenght, 0, 140, 0, MAXBRIGHTNESS));
-            }
-        break;
-        default:
-            led_error();
+        activity = inData[0];
+        duration = inData[1];
+        freq = inData[2];
+        identifier = inData[3];
     }
 
-    // led_error();
-
-    // stateMoving(WALKING, 5, 30);
-    // stateStanding(WALKING, 30);
-    // led_error();
+    if(power)
+    {
+        if(identifier == 0)
+        {
+            led_error();
+        }else{
+            switch(activity)
+            {
+                case 0:
+                    pulse(WALKING, 60, map(strenght, 0, 255, 60, MAXBRIGHTNESS), freq);
+                break;
+                case 1:
+                    pulse(CYCLING, 60, map(strenght, 0, 255, 60, MAXBRIGHTNESS), freq);
+                break;
+                case 2:
+                    pulse(RUNNING, 60, map(strenght, 0, 255, 60, MAXBRIGHTNESS), freq);
+                break;
+                default:
+                    pulse(WARNING, 60, map(strenght, 0, 255, 60, MAXBRIGHTNESS), freq);
+            }
+        }
+    }else{
+        stateStanding(BLACK, 0);
+    }
     
+    // If looper reach 100, 1 second has passed and should be deleted from duration
+    if(looper == 100)
+    {
+        if(power)
+        {
+            duration--;
+        }
+        looper = 0;
+    }
+
+    looper++;
+
+    controller_val = digitalRead(controller);
+
+    if (controller_val == 0)
+    {
+        power = !power;
+        
+        if(!power)
+        {
+            stateStanding(BLACK, 0);
+            delay(2000);
+        }
+    }
+
     delay(10);
     
 }
@@ -107,6 +131,7 @@ char serialToString()
         inData[0] = Serial.parseInt();
         inData[1] = Serial.parseInt();
         inData[2] = Serial.parseInt();
+        inData[3] = Serial.parseInt();
 
         if (Serial.read() == '\n') {
 
@@ -124,6 +149,39 @@ void stateStanding(uint32_t color, int lum)
     setStripColor(color);
     leds.setBrightness(lum);
     leds.show();
+}
+
+// 
+// 
+// 
+// 
+void pulse(uint32_t color, int low, int high, int speed)
+{
+
+    // speed = speed
+
+    for (int i = 0; i < 1; ++i)
+    {
+        
+        clearLEDs();
+        setStripColor(color);
+
+        for (int i = low; i < high; ++i)
+        {
+            setStripColor(color);
+            leds.setBrightness(i);
+            leds.show();
+            delay(speed);
+        }
+
+        for (int i = high; i > low; --i)
+        {
+            setStripColor(color);
+            leds.setBrightness(i);
+            leds.show();
+            delay(speed);
+        }
+    }
 }
 
 // 

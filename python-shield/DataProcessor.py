@@ -91,6 +91,8 @@ class DataProcessor():
 		tot = 0
 		avg = {'walking': {'count': 0, 'calc': 0.0}, 'running': {'count': 0, 'calc': 0.0}, 'transport': {'count': 0, 'calc': 0.0}}
 
+		print self.data
+
 		for row in self.data:
 			for summary in row['summary']:
 				avg[str(summary['activity'])]['count'] += 1
@@ -116,3 +118,35 @@ class DataProcessor():
 		# x = "%.2f" % f
 
 		return msg
+
+	'''
+		Get yesterday type, duration and pulse
+	'''
+	def getDuration(self):
+		yesterday = self.data[-2]
+		total_duration = 0
+		biggest_num = 0
+		biggest_title = None
+		steps = 0
+
+		# print yesterday
+
+		for i in yesterday['summary']:
+			if i['group'] in SHORTNAMES:
+				total_duration += i['duration']
+				if i['duration'] > biggest_num:
+					biggest_num = i['duration']
+					biggest_title = i['group']
+					try:
+						steps = i['steps']
+					except Exception, e:
+						steps = 0
+
+		freq = 0
+		if steps is not 0:
+			freq = int((steps/(total_duration/60))/3)
+
+		data_str = str(SHORTNAMES[biggest_title]) + ',' + str(int(total_duration)) + ',' + str(freq) + ',' + str(yesterday['date'])
+
+		return data_str
+
